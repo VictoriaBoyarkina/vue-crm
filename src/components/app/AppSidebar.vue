@@ -17,9 +17,6 @@
 
 <script>
 export default {
-  created() {
-    console.log(this.isOpen); //undefined;
-  },
   props: ["isOpen"],
   data: () => ({
     links: [

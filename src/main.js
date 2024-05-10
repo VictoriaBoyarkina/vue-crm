@@ -1,30 +1,52 @@
 import Vuelidate from "@vuelidate/core";
 import { createApp } from "vue";
-// import { initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
+import { getAuth } from "firebase/auth";
 import App from "./App.vue";
 import messagePlugin from "@/utils/message.plugin";
+import VueAwesomePaginate from "vue-awesome-paginate";
+import Loader from "./components/app/AppLoader.vue";
+import tooltipDirective from "@/directives/tooltip.directive";
 import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
-import "materialize-css/dist/js/materialize.min.js";
+import materializePlugin from "@/utils/materialize.plugin";
+import "@/assets/index.css";
+import "vue-awesome-paginate/dist/style.css";
+import { Chart, registerables } from "chart.js";
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyCQwpeFffXHnp0InZyRjre2u_EdpZx7RjI",
-//   authDomain: "vue-crm-b7711.firebaseapp.com",
-//   projectId: "vue-crm-b7711",
-//   storageBucket: "vue-crm-b7711.appspot.com",
-//   messagingSenderId: "503550488619",
-//   appId: "1:503550488619:web:0248317bb9c93c511bfa6e",
-//   measurementId: "G-MEDPM6C8E2",
-// };
+Chart.register(...registerables);
 
-// const app = initializeApp(firebaseConfig);
-// export default app;
+const firebaseConfig = {
+  apiKey: "AIzaSyBN29RJcjtsjsuHPhB2laQpct8RaGY017w",
+  authDomain: "vue-crm-19ad9.firebaseapp.com",
+  projectId: "vue-crm-19ad9",
+  storageBucket: "vue-crm-19ad9.appspot.com",
+  messagingSenderId: "357039396968",
+  appId: "1:357039396968:web:dceaf99772880ca8c203dd",
+  measurementId: "G-4JFG31FMN5",
+};
 
-createApp(App)
-  .use(Vuelidate)
-  .use(messagePlugin)
-  .use(store)
-  .use(router)
-  .mount("#app");
-//   .initializeApp(firebaseConfig)
+const fireApp = initializeApp(firebaseConfig);
+const db = getDatabase(fireApp);
+const auth = getAuth();
+
+export { db };
+
+let app;
+
+auth.onAuthStateChanged(() => {
+  if (!app) {
+    app = createApp(App)
+      .use(Vuelidate)
+      .use(messagePlugin)
+      .use(materializePlugin)
+      .directive("tooltip", tooltipDirective)
+      .use(store)
+      .use(router)
+      .use(VueAwesomePaginate)
+      .component("Loader", Loader)
+      .mount("#app");
+  }
+});

@@ -16,7 +16,7 @@
             data-target="dropdown"
             ref="dropdown"
           >
-            USER NAME
+            {{ name }}
             <i class="material-icons right">arrow_drop_down</i>
           </a>
 
@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import M from "materialize-css";
 export default {
   data: () => ({
     date: new Date(),
@@ -48,8 +47,8 @@ export default {
     dropdown: null,
   }),
   methods: {
-    logout() {
-      console.log("Logout");
+    async logout() {
+      await this.$store.dispatch("logout");
       this.$router.push("/login?message=logout");
     },
   },
@@ -57,7 +56,7 @@ export default {
     this.interval = setInterval(() => {
       this.date = new Date();
     }, 1000);
-    this.dropdown = M.Dropdown.init(this.$refs.dropdown, {
+    this.dropdown = this.$M.Dropdown.init(this.$refs.dropdown, {
       constrainWidth: true,
       coverTrigger: false,
     });
@@ -79,6 +78,9 @@ export default {
         day: "2-digit",
       };
       return new Intl.DateTimeFormat("ru-RU", options).format(this.date);
+    },
+    name() {
+      return this.$store.getters.info.name;
     },
   },
 };

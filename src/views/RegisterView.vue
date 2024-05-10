@@ -117,17 +117,19 @@ export default {
     };
   },
   methods: {
-    submitHandler() {
+    async submitHandler() {
       this.v$.$validate();
-      if (!this.v$.$error) {
-        this.$router.push("/");
-      }
       const formData = {
         email: this.state.email,
         password: this.state.password,
         name: this.state.name,
       };
-      console.log(formData);
+      try {
+        await this.$store.dispatch("register", formData);
+        this.$router.push("/");
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
 };
