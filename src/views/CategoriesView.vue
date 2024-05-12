@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="page-title">
-      <h3>Категории</h3>
+      <h3>{{ $translate("Menu_Categories") }}</h3>
     </div>
     <section>
       <Loader v-if="loading" />
@@ -13,7 +13,7 @@
           @updated="updateCategories"
           :key="categories.length + updateCount"
         />
-        <p v-else class="center">Категорий пока нет</p>
+        <p v-else class="center">{{ $translate("NoCategories") }}</p>
       </div>
     </section>
   </div>

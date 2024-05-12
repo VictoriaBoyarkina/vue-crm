@@ -2,8 +2,8 @@
   <div>
     <Loader v-if="loading" />
     <div v-else class="app-main-layout">
-      <app-navbar @myclick="isOpen = !isOpen" />
-      <app-sidebar v-bind:isOpen="isOpen" />
+      <AppNavbar @myclick="isOpen = !isOpen" />
+      <AppSidebar v-bind:isOpen="isOpen" />
 
       <main class="app-content" :class="{ full: !isOpen }">
         <div class="app-page">
@@ -27,7 +27,6 @@
 <script>
 import AppNavbar from "@/components/app/AppNavbar.vue";
 import AppSidebar from "@/components/app/AppSidebar.vue";
-import messages from "@/utils/messages";
 
 export default {
   name: "main-layout",
@@ -54,7 +53,7 @@ export default {
   watch: {
     error(fbError) {
       console.log(fbError);
-      this.$error(messages[fbError.code] || "Что-то пошло не так");
+      this.$error(this.$translate(fbError.code) || "Что-то пошло не так");
     },
   },
 };

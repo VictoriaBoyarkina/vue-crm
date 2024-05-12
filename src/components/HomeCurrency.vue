@@ -3,14 +3,14 @@
     <div class="card orange darken-3 bill-card">
       <div class="card-content white-text">
         <div class="card-header">
-          <span class="card-title">Курс валют</span>
+          <span class="card-title">{{ $translate("CurrencyRate") }}</span>
         </div>
         <table>
           <thead>
             <tr>
-              <th>Валюта</th>
-              <th>Курс</th>
-              <th>Дата</th>
+              <th>{{ $translate("Currency") }}</th>
+              <th>{{ $translate("Rate") }}</th>
+              <th>{{ $translate("Date") }}</th>
             </tr>
           </thead>
 
@@ -18,7 +18,18 @@
             <tr v-for="cur in currencies" :key="cur">
               <td>{{ cur }}</td>
               <td>{{ rates[cur].toFixed(5) }}</td>
-              <td>{{ normalizeDate(date) }}</td>
+              <td>
+                {{
+                  $normalizeDate(
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "2-digit",
+                    },
+                    date
+                  )
+                }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -33,17 +44,5 @@ export default {
   data: () => ({
     currencies: ["RUB", "USD", "EUR"],
   }),
-  methods: {
-    normalizeDate(date) {
-      const options = {
-        year: "numeric",
-        month: "long",
-        day: "2-digit",
-      };
-      const data = new Date(Date.parse(date));
-      console.log(data);
-      return new Intl.DateTimeFormat("ru-RU", options).format(data);
-    },
-  },
 };
 </script>

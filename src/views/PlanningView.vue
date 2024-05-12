@@ -1,24 +1,32 @@
 <template>
   <div>
     <div class="page-title">
-      <h3>Планирование</h3>
+      <h3>{{ $translate("Menu_Planning") }}</h3>
       <h4>{{ currencyFilter(info.bill) }}</h4>
     </div>
 
     <Loader v-if="loading" />
 
     <p class="center" v-else-if="!categories.length">
-      Категорий пока нет.
-      <router-link to="/categories">Добавить новую категорию</router-link>
+      {{ $translate("NoCategories") }}
+      <router-link to="/categories">{{
+        $translate("AddNewCategory")
+      }}</router-link>
     </p>
 
     <section v-else>
       <div v-for="cat in categories" :key="cat.key">
         <p>
           <strong>{{ cat.title }}:</strong>
-          {{ currencyFilter(cat.spent) }} из {{ currencyFilter(cat.limit) }}
+          {{ currencyFilter(cat.spent) }} {{ $translate("Outof") }}
+          {{ currencyFilter(cat.limit) }}
         </p>
-        <div class="progress" v-tooltip="{ value: cat.tooltip }">
+        <div
+          class="progress"
+          v-tooltip="{
+            value: `${$translate(cat.tooltipText)} ${cat.tooltipAmount}`,
+          }"
+        >
           <div
             class="determinate"
             :class="[cat.progressColor]"
@@ -58,16 +66,16 @@ export default {
       const progressColor =
         percent < 60 ? "green" : percent < 100 ? "yellow" : "red";
       const tooltipValue = cat.limit - spent;
-      const tooltip = `${
-        tooltipValue < 0 ? "Превышение на" : "Осталось"
-      } ${this.currencyFilter(Math.abs(tooltipValue))}`;
+      const tooltipText = `${tooltipValue < 0 ? "Excess" : "Left"}`;
+      const tooltipAmount = `${this.currencyFilter(Math.abs(tooltipValue))}`;
 
       return {
         ...cat,
         progressPercent,
         progressColor,
         spent,
-        tooltip,
+        tooltipText,
+        tooltipAmount,
       };
     });
 

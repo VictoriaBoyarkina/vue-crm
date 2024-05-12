@@ -2,7 +2,7 @@
   <div class="col s12 m6">
     <div>
       <div class="page-subtitle">
-        <h4>Редактировать</h4>
+        <h4>{{ $translate("Edit") }}</h4>
       </div>
 
       <form @submit.prevent="submitHandler">
@@ -16,7 +16,7 @@
               {{ category.title }}
             </option>
           </select>
-          <label>Выберите категорию</label>
+          <label>{{ $translate("ChooseCategory") }}</label>
         </div>
         <div class="input-field">
           <input
@@ -25,9 +25,9 @@
             v-model="title"
             :class="{ invalid: v$.title.$error }"
           />
-          <label for="name">Название</label>
+          <label for="name">{{ $translate("Name") }}</label>
           <span class="helper-text invalid" v-if="v$.title.$error">
-            Введите название категории
+            {{ $translate("Message_EnterCategoryName") }}
           </span>
         </div>
 
@@ -38,14 +38,15 @@
             v-model.number="limit"
             :class="{ invalid: v$.limit.$error }"
           />
-          <label for="limit">Лимит</label>
+          <label for="limit">{{ $translate("Limit") }}</label>
           <span class="helper-text invalid" v-if="v$.limit.$error">
-            Минимальное значение {{ this.v$.limit.minValue.$params.min }}
+            {{ $translate("MinValue") }}
+            {{ this.v$.limit.minValue.$params.min }}
           </span>
         </div>
 
         <button class="btn waves-effect waves-light" type="submit">
-          Обновить
+          {{ $translate("Update") }}
           <i class="material-icons right">send</i>
         </button>
       </form>
@@ -82,18 +83,20 @@ export default {
   },
   methods: {
     async submitHandler() {
-      try {
-        this.v$.$validate();
-        const categoryData = {
-          id: this.current,
-          title: this.title,
-          limit: this.limit,
-        };
-        await this.$store.dispatch("updateCategory", categoryData);
-        this.$message("Категория успешно обновлена!");
-        this.$emit("updated", categoryData);
-      } catch (e) {
-        console.log(e);
+      this.v$.$validate();
+      if (!this.v$.$invalid) {
+        try {
+          const categoryData = {
+            id: this.current,
+            title: this.title,
+            limit: this.limit,
+          };
+          await this.$store.dispatch("updateCategory", categoryData);
+          this.$message(this.$translate("CategoryUpdated"));
+          this.$emit("updated", categoryData);
+        } catch (e) {
+          console.log(e);
+        }
       }
     },
   },

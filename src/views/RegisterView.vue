@@ -1,7 +1,7 @@
 <template>
   <form class="card auth-card" @submit.prevent="submitHandler">
     <div class="card-content">
-      <span class="card-title">Домашняя бухгалтерия</span>
+      <span class="card-title">{{ $translate("HomeBookkeeping") }}</span>
       <div class="input-field">
         <input
           id="email"
@@ -11,9 +11,9 @@
             invalid: v$.email.$error,
           }"
         />
-        <label for="email">Email</label>
+        <label for="email">{{ $translate("Email") }}</label>
         <small class="helper-text invalid" v-if="v$.email.$error">{{
-          v$.email.$errors[0].$message
+          $translate(v$.email.$errors[0].$message)
         }}</small>
       </div>
       <div class="input-field">
@@ -25,9 +25,9 @@
             invalid: v$.password.$error,
           }"
         />
-        <label for="password">Пароль</label>
+        <label for="password">{{ $translate("Password") }}</label>
         <small class="helper-text invalid" v-if="v$.password.$error">{{
-          v$.password.$errors[0].$message
+          $translate(v$.password.$errors[0].$message)
         }}</small>
       </div>
       <div class="input-field">
@@ -40,29 +40,29 @@
             invalid: v$.name.$error,
           }"
         />
-        <label for="name">Имя</label>
+        <label for="name">{{ $translate("UserName") }}</label>
         <small class="helper-text invalid" v-if="v$.name.$error">{{
-          v$.name.$errors[0].$message
+          $translate(v$.name.$errors[0].$message)
         }}</small>
       </div>
       <p>
         <label>
           <input type="checkbox" v-model="state.agree" />
-          <span>С правилами согласен</span>
+          <span>{{ $translate("AcceptTerms") }}</span>
         </label>
       </p>
     </div>
     <div class="card-action">
       <div>
         <button class="btn waves-effect waves-light auth-submit" type="submit">
-          Зарегистрироваться
+          {{ $translate("Signup") }}
           <i class="material-icons right">send</i>
         </button>
       </div>
 
       <p class="center">
-        Уже есть аккаунт?
-        <router-link to="/login">Войти!</router-link>
+        {{ $translate("HaveAccount") }}
+        <router-link to="/login">{{ $translate("Login!") }}</router-link>
       </p>
     </div>
   </form>
@@ -83,27 +83,18 @@ export default {
     const rules = computed(() => {
       return {
         email: {
-          required: helpers.withMessage(
-            "Поле Email не должно быть пустым",
-            required
-          ),
-          email: helpers.withMessage("Введите корректный Email", email),
+          required: helpers.withMessage("Message_EmptyEmailField", required),
+          email: helpers.withMessage("Message_EnterValidEmail", email),
         },
         password: {
-          required: helpers.withMessage(
-            "Поле Пароль не должно быть пустым",
-            required
-          ),
+          required: helpers.withMessage("Message_EmptyPasswordField", required),
           minLength: helpers.withMessage(
-            `Пароль дожен содержать более 6 символов`,
+            "Message_PasswordMinValue",
             minLength(6)
           ),
         },
         name: {
-          required: helpers.withMessage(
-            "Поле Имя не должно быть пустым",
-            required
-          ),
+          required: helpers.withMessage("Message_EmptyUserNameField", required),
         },
         agree: {
           checked: (value) => value,
@@ -119,16 +110,18 @@ export default {
   methods: {
     async submitHandler() {
       this.v$.$validate();
-      const formData = {
-        email: this.state.email,
-        password: this.state.password,
-        name: this.state.name,
-      };
-      try {
-        await this.$store.dispatch("register", formData);
-        this.$router.push("/");
-      } catch (e) {
-        console.log(e);
+      if (!this.v$.$invalid) {
+        const formData = {
+          email: this.state.email,
+          password: this.state.password,
+          name: this.state.name,
+        };
+        try {
+          await this.$store.dispatch("register", formData);
+          this.$router.push("/");
+        } catch (e) {
+          console.log(e);
+        }
       }
     },
   },

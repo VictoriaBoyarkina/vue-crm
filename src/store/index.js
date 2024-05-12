@@ -23,9 +23,20 @@ export default createStore({
     async fetchCurrency() {
       const key = process.env.VUE_APP_FIXER;
       const res = await fetch(
-        `http://data.fixer.io/api/latest?access_key=${key}&symbols=USD,EUR,RUB`
+        `https://api.currencyapi.com/v3/latest?apikey=${key}&base_currency=EUR&currencies=USD,EUR,RUB`
       );
-      return await res.json();
+      const { meta, data } = await res.json();
+
+      const rates = [];
+
+      Object.keys(data).forEach((key) => {
+        rates[key] = data[key].value;
+      });
+
+      return {
+        rates: rates,
+        date: meta.last_updated_at,
+      };
     },
   },
   modules: {

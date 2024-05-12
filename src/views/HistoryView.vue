@@ -1,19 +1,19 @@
 <template>
   <div>
     <div class="page-title">
-      <h3>История записей</h3>
+      <h3>{{ $translate("RecordsHistory") }}</h3>
     </div>
 
     <Loader v-if="loading" />
 
     <p class="center" v-else-if="!records.length">
-      Записей пока нет.
-      <router-link to="/record">Добавить новую запись</router-link>
+      {{ $translate("NoRecords") }}
+      <router-link to="/record">{{ $translate("AddNewRecord") }}</router-link>
     </p>
 
     <div v-else>
       <div class="history-chart">
-        <HistoryChart :categories="categories" />
+        <HistoryChart :categories="categories" :records="records" />
       </div>
 
       <section>

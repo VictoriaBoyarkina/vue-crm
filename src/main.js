@@ -5,6 +5,8 @@ import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import App from "./App.vue";
 import messagePlugin from "@/utils/message.plugin";
+import localizePlugin from "./utils/localize.plugin";
+import datePlugin from "./utils/date.plugin";
 import VueAwesomePaginate from "vue-awesome-paginate";
 import Loader from "./components/app/AppLoader.vue";
 import tooltipDirective from "@/directives/tooltip.directive";
@@ -42,6 +44,8 @@ auth.onAuthStateChanged(() => {
       .use(Vuelidate)
       .use(messagePlugin)
       .use(materializePlugin)
+      .use(localizePlugin)
+      .use(datePlugin)
       .directive("tooltip", tooltipDirective)
       .use(store)
       .use(router)

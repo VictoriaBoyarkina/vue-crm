@@ -9,7 +9,7 @@ export default {
   components: {
     Pie,
   },
-  props: ["categories"],
+  props: ["categories", "records"],
   data: () => ({
     chartData: {
       labels: [],
@@ -17,11 +17,24 @@ export default {
     },
     chartOptions: {
       responsive: true,
+      maintainAspectRatio: false,
     },
   }),
   created() {
     this.chartData.labels = this.categories.map((c) => c.title);
-    console.log(this.chartData.labels);
+
+    this.chartData.datasets = [
+      {
+        data: this.categories.map((c) => {
+          return this.records.reduce((total, r) => {
+            if (r.categoryId === c.key && r.type === "outcome") {
+              total += +r.amount;
+            }
+            return total;
+          }, 0);
+        }),
+      },
+    ];
   },
 };
 </script>

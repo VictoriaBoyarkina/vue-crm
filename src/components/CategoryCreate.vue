@@ -2,7 +2,7 @@
   <div class="col s12 m6">
     <div>
       <div class="page-subtitle">
-        <h4>Создать</h4>
+        <h4>{{ $translate("Create") }}</h4>
       </div>
 
       <form @submit.prevent="submitHandler">
@@ -13,9 +13,9 @@
             v-model="title"
             :class="{ invalid: v$.title.$error }"
           />
-          <label for="name">Название</label>
+          <label for="name">{{ $translate("Name") }}</label>
           <span class="helper-text invalid" v-if="v$.title.$error">
-            Введите название
+            {{ $translate("Message_EnterName") }}
           </span>
         </div>
 
@@ -26,14 +26,15 @@
             v-model.number="limit"
             :class="{ invalid: v$.limit.$error }"
           />
-          <label for="limit">Лимит</label>
+          <label for="limit">{{ $translate("Limit") }}</label>
           <span class="helper-text invalid" v-if="v$.limit.$error">
-            Минимальное значение {{ this.v$.limit.minValue.$params.min }}
+            {{ $translate("MinValue") }}
+            {{ this.v$.limit.minValue.$params.min }}
           </span>
         </div>
 
         <button class="btn waves-effect waves-light" type="submit">
-          Создать
+          {{ $translate("Create") }}
           <i class="material-icons right">send</i>
         </button>
       </form>
@@ -61,19 +62,21 @@ export default {
   },
   methods: {
     async submitHandler() {
-      try {
-        this.v$.$validate();
-        const category = await this.$store.dispatch("createCategory", {
-          title: this.title,
-          limit: this.limit,
-        });
-        this.title = "";
-        this.limit = 1;
-        this.v$.$reset();
-        this.$message("Категория создана!");
-        this.$emit("created", category);
-      } catch (e) {
-        console.log(e);
+      this.v$.$validate();
+      if (!this.v$.$invalid) {
+        try {
+          const category = await this.$store.dispatch("createCategory", {
+            title: this.title,
+            limit: this.limit,
+          });
+          this.title = "";
+          this.limit = 1;
+          this.v$.$reset();
+          this.$message(this.$translate("CategoryCreated"));
+          this.$emit("created", category);
+        } catch (e) {
+          console.log(e);
+        }
       }
     },
   },

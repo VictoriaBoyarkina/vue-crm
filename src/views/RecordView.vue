@@ -1,14 +1,16 @@
 <template>
   <div>
     <div class="page-title">
-      <h3>Новая запись</h3>
+      <h3>{{ $translate("Menu_NewRecord") }}</h3>
     </div>
 
     <Loader v-if="loading" />
 
     <p class="center" v-else-if="!categories.length">
-      Категорий пока нет.
-      <router-link to="/categories">Добавить новую категорию</router-link>
+      {{ $translate("NoCategories") }}
+      <router-link to="/categories">{{
+        $translate("AddNewCategory")
+      }}</router-link>
     </p>
 
     <form class="form" v-else @submit.prevent="submitHandler">
@@ -22,7 +24,7 @@
             {{ category.title }}
           </option>
         </select>
-        <label>Выберите категорию</label>
+        <label>{{ $translate("ChooseCategory") }}</label>
       </div>
 
       <p>
@@ -34,7 +36,7 @@
             value="income"
             v-model="type"
           />
-          <span>Доход</span>
+          <span>{{ $translate("Income") }}</span>
         </label>
       </p>
 
@@ -47,7 +49,7 @@
             value="outcome"
             v-model="type"
           />
-          <span>Расход</span>
+          <span>{{ $translate("Outcome") }}</span>
         </label>
       </p>
 
@@ -58,9 +60,9 @@
           v-model.number="amount"
           :class="{ invalid: v$.amount.$error }"
         />
-        <label for="amount">Сумма</label>
+        <label for="amount">{{ $translate("Amount") }}</label>
         <span class="helper-text invalid" v-if="v$.amount.$error">
-          Минимальное значение {{ this.v$.amount.minValue.$params.min }}
+          {{ $translate("MinValue") }} {{ this.v$.amount.minValue.$params.min }}
         </span>
       </div>
 
@@ -71,14 +73,14 @@
           v-model="description"
           :class="{ invalid: v$.description.$error }"
         />
-        <label for="description">Описание</label>
+        <label for="description">{{ $translate("Description") }}</label>
         <span class="helper-text invalid" v-if="v$.description.$error">
-          Введите описание
+          {{ $translate("Message_EnterDescription") }}
         </span>
       </div>
 
       <button class="btn waves-effect waves-light" type="submit">
-        Создать
+        {{ $translate("Create") }}
         <i class="material-icons right">send</i>
       </button>
     </form>
@@ -139,33 +141,37 @@ export default {
   },
   methods: {
     async submitHandler() {
-      try {
-        this.v$.$validate();
-        if (this.canCreateRecord) {
-          await this.$store.dispatch("createRecord", {
-            categoryId: this.category,
-            amount: this.amount,
-            description: this.description,
-            type: this.type,
-            date: new Date().toJSON(),
-          });
+      this.v$.$validate();
+      if (!this.v$.$invalid) {
+        try {
+          if (this.canCreateRecord) {
+            await this.$store.dispatch("createRecord", {
+              categoryId: this.category,
+              amount: this.amount,
+              description: this.description,
+              type: this.type,
+              date: new Date().toJSON(),
+            });
 
-          const bill =
-            this.type === "income"
-              ? this.info.bill + this.amount
-              : this.info.bill - this.amount;
+            const bill =
+              this.type === "income"
+                ? this.info.bill + this.amount
+                : this.info.bill - this.amount;
 
-          await this.$store.dispatch("updateInfo", { bill });
-          this.$message("Запись успешно создана");
-          this.v$.$reset();
-          this.amount = 1;
-          this.description = "";
-        } else {
-          this.$message(`
-          Недостаточно средств на счете (${this.amount - this.info.bill})`);
+            await this.$store.dispatch("updateInfo", { bill });
+            this.$message(this.$translate("RecordCreated"));
+            this.v$.$reset();
+            this.amount = 1;
+            this.description = "";
+          } else {
+            this.$message(`
+          ${this.$translate("InsufficientFunds")} (${
+              this.amount - this.info.bill
+            })`);
+          }
+        } catch (e) {
+          console.log(e);
         }
-      } catch (e) {
-        console.log(e);
       }
     },
   },

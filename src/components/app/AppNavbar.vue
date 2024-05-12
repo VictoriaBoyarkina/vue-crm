@@ -5,7 +5,19 @@
         <a href="#" @click.stop.prevent="$emit('myclick')">
           <i class="material-icons black-text">dehaze</i>
         </a>
-        <span class="black-text">{{ normalizeDate }}</span>
+        <span class="black-text">{{
+          $normalizeDate(
+            {
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+              year: "numeric",
+              month: "long",
+              day: "2-digit",
+            },
+            date
+          )
+        }}</span>
       </div>
 
       <ul class="right hide-on-small-and-down">
@@ -23,13 +35,15 @@
           <ul id="dropdown" class="dropdown-content">
             <li>
               <router-link to="/profile" class="black-text">
-                <i class="material-icons">account_circle</i>Профиль
+                <i class="material-icons">account_circle</i
+                >{{ $translate("ProfileTitle") }}
               </router-link>
             </li>
             <li class="divider" tabindex="-1"></li>
             <li>
               <a href="#" class="black-text" @click.stop.prevent="logout">
-                <i class="material-icons">assignment_return</i>Выйти
+                <i class="material-icons">assignment_return</i
+                >{{ $translate("Logout") }}
               </a>
             </li>
           </ul>
@@ -68,17 +82,6 @@ export default {
     }
   },
   computed: {
-    normalizeDate() {
-      const options = {
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-        year: "numeric",
-        month: "long",
-        day: "2-digit",
-      };
-      return new Intl.DateTimeFormat("ru-RU", options).format(this.date);
-    },
     name() {
       return this.$store.getters.info.name;
     },

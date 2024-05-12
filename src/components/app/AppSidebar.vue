@@ -18,14 +18,16 @@
 <script>
 export default {
   props: ["isOpen"],
-  data: () => ({
-    links: [
-      { title: "Счет", url: "/", exact: true },
-      { title: "История", url: "/history" },
-      { title: "Планирование", url: "/planning" },
-      { title: "Новая запись", url: "/record" },
-      { title: "Категории", url: "/categories" },
-    ],
-  }),
+  computed: {
+    links() {
+      return [
+        { title: this.$translate("Menu_Bill"), url: "/", exact: true },
+        { title: this.$translate("Menu_History"), url: "/history" },
+        { title: this.$translate("Menu_Planning"), url: "/planning" },
+        { title: this.$translate("Menu_NewRecord"), url: "/record" },
+        { title: this.$translate("Menu_Categories"), url: "/categories" },
+      ];
+    },
+  },
 };
 </script>
